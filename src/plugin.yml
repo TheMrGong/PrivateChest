@@ -1,0 +1,6 @@
+name: PrivateChest
+author: TheMrGong
+authors: [Alpha]
+version: 1.0.1
+main: com.gong.main.Main
+description: Adds chests that have per-player inventories!
