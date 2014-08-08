@@ -68,5 +68,8 @@ public class OpenPrivateChestEvent extends Event implements Cancellable {
 	public void setDoubleChest(boolean isDoubleChest) {
 		this.isDoubleChest = isDoubleChest;
 	}
-
+	
+	public static HandlerList getHandlerList() {
+        return handlers;
+    }
 }
