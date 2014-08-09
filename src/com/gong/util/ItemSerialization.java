@@ -7,21 +7,18 @@ import java.io.DataInputStream;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.lang.reflect.Method;
- 
 
 import net.minecraft.server.v1_7_R1.NBTBase;
 import net.minecraft.server.v1_7_R1.NBTCompressedStreamTools;
 import net.minecraft.server.v1_7_R1.NBTTagCompound;
 import net.minecraft.server.v1_7_R1.NBTTagList;
- 
 
-import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
- 
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.v1_7_R1.inventory.CraftInventoryCustom;
 import org.bukkit.craftbukkit.v1_7_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
  
 // For 1.7.2
 public class ItemSerialization {
@@ -52,10 +49,10 @@ public class ItemSerialization {
     }
     
     public static Inventory fromBase64(String data, String playerName) {
-    	String pre = ChatColor.BLACK+"["+ChatColor.AQUA+"PrivateInventory"+ChatColor.BLACK+"] "+ChatColor.WHITE;
+    	String pre = ChatColor.BLACK+"["+ChatColor.AQUA+"PrivateChest"+ChatColor.BLACK+"] "+ChatColor.WHITE;
         ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
         NBTTagList itemList = (NBTTagList) readNbt(new DataInputStream(inputStream), 0);
-        Inventory inventory = new CraftInventoryCustom(null, itemList.size(), pre+ChatColor.GOLD+playerName);
+        Inventory inventory = new CraftInventoryCustom(null, itemList.size(), pre);
  
         for (int i = 0; i < itemList.size(); i++) {
             NBTTagCompound inputObject = (NBTTagCompound) itemList.get(i);

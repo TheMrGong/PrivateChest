@@ -13,11 +13,12 @@ public class InventoryCloseListener implements Listener {
 	@EventHandler
 	public void inventoryClose(InventoryCloseEvent ev)
 	{
-		if(ev.getInventory().getName().toLowerCase().contains("privateinventory"))
+		if(ev.getInventory().getName().toLowerCase().contains("privatechest"))
 		{
 			String uuid = ev.getPlayer().getUniqueId().toString();
 			String inventory = ItemSerialization.toBase64(ev.getInventory());
-			plugin.getConfig().set("inv."+uuid, inventory);
+			plugin.Config.set("inv."+uuid, inventory);
+			plugin.Config.saveConfig();
 		}
 	}
 }

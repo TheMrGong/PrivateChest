@@ -1,7 +1,6 @@
 package com.gong.listener;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,16 +18,9 @@ public class InventoryOpenListener implements Listener {
 	{
 		if(plugin.justOpenedPrivateChest.containsKey(ev.getPlayer().getUniqueId()))
 		{
-			Block opened = plugin.justOpenedPrivateChest.get(ev.getPlayer());
-			boolean isDoubleChest = false;
-			for(Block t : Functions.getSuroundingBlocksNY(opened))
-			{
-				if(t.getType().equals(Material.CHEST))
-				{
-					isDoubleChest = true;
-				}
-			}
-			OpenPrivateChestEvent open = new OpenPrivateChestEvent(opened, Functions.getPlayerFromUUID(ev.getPlayer().getUniqueId()), ev.getInventory(), isDoubleChest);
+			Block opened = plugin.justOpenedPrivateChest.get(ev.getPlayer().getUniqueId());
+			plugin.justOpenedPrivateChest.remove(ev.getPlayer().getUniqueId());
+			OpenPrivateChestEvent open = new OpenPrivateChestEvent(opened, Functions.getPlayerFromUUID(ev.getPlayer().getUniqueId()), ev.getInventory(), Functions.isDoubleChest(opened), ev);
 			Bukkit.getPluginManager().callEvent(open);
 		}
 	}

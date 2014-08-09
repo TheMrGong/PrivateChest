@@ -1,6 +1,46 @@
 name: PrivateChest
 author: TheMrGong
-authors: [Alpha]
-version: 1.0.1
+authors: [BETA]
+version: 1.2.9
 main: com.gong.main.Main
 description: Adds chests that have per-player inventories!
+commands:
+  privatechest:
+    aliases: pr
+    usage: /pr open <Player>
+permissions:
+  privatechest.*:
+    description: Gives access to all PrivateChest features
+    children:
+      privatechest.placesign: true
+      privatechest.breaksign: true
+      privatechest.openchest: true
+      privatechest.cmd.*: true
+      privatechest.cmd.help: true
+      privatechest.cmd.open: true
+      privatechest.cmd.open.other: true
+  privatechest.placesign:
+    description: Allows you to place PrivateChest signs
+    default: op
+  privatechest.breaksign:
+    description: Allows you to break PrivateChest signs
+    default: op
+  privatechest.openchest:
+    description: Allows you to open your own PrivateChest
+    default: op
+  privatechest.cmd.*:
+    description: Gives all permissions for cmd
+    default: op
+    children: 
+      privatechest.cmd.open: true
+      privatechest.cmd.open.other: true
+      privatechest.cmd.help: true
+  privatechest.cmd.open:
+    description: Allows user to use see own PrivateChest
+    default: true
+  privatechest.cmd.open.other:
+    description: Allows user to see others Private Chests
+    default: op
+  privatechest.cmd.help:
+    description: Allows user to see help for PrivateChest
+    default: op

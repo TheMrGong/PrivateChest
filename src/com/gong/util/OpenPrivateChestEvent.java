@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
 
 public class OpenPrivateChestEvent extends Event implements Cancellable {
@@ -14,12 +15,15 @@ public class OpenPrivateChestEvent extends Event implements Cancellable {
 	private Player opener;
 	private Inventory inventoryOpened;
 	private boolean isDoubleChest;
+	private InventoryOpenEvent inventoryOpenEvent;
 	
-	public OpenPrivateChestEvent(Block blockOpened, Player opener, Inventory inventoryOpened, boolean isDoubleChest)
+	public OpenPrivateChestEvent(Block blockOpened, Player opener, Inventory inventoryOpened, Boolean isDoubleChest, InventoryOpenEvent e)
 	{
 		this.setBlockOpened(blockOpened);
 		this.setOpener(opener);
 		this.setInventoryOpened(inventoryOpened);
+		this.setInventoryOpenEvent(e);
+		this.setDoubleChest(isDoubleChest);
 	}
 	
 	@Override
@@ -72,4 +76,12 @@ public class OpenPrivateChestEvent extends Event implements Cancellable {
 	public static HandlerList getHandlerList() {
         return handlers;
     }
+
+	public InventoryOpenEvent getInventoryOpenEvent() {
+		return inventoryOpenEvent;
+	}
+
+	public void setInventoryOpenEvent(InventoryOpenEvent inventoryOpenEvent) {
+		this.inventoryOpenEvent = inventoryOpenEvent;
+	}
 }
