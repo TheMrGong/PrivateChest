@@ -19,6 +19,7 @@ permissions:
       privatechest.cmd.help: true
       privatechest.cmd.open: true
       privatechest.cmd.open.other: true
+      privatechest.cmd.reload: true
   privatechest.placesign:
     description: Allows you to place PrivateChest signs
     default: op
@@ -34,6 +35,7 @@ permissions:
     children: 
       privatechest.cmd.open: true
       privatechest.cmd.open.other: true
+      privatechest.cmd.reload: true
       privatechest.cmd.help: true
   privatechest.cmd.open:
     description: Allows user to use see own PrivateChest
@@ -43,4 +45,7 @@ permissions:
     default: op
   privatechest.cmd.help:
     description: Allows user to see help for PrivateChest
+    default: op
+  privatechest.cmd.reload:
+    description: Allows user to reload config for PrivateChest
     default: op

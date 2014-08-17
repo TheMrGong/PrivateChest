@@ -18,7 +18,8 @@ public class MyConfig
     private File file;
     private FileConfiguration config;
  
-    public MyConfig(InputStream configStream, File configFile, int comments, JavaPlugin plugin) 
+    @SuppressWarnings("deprecation")
+	public MyConfig(InputStream configStream, File configFile, int comments, JavaPlugin plugin) 
     {
         this.comments = comments;
         this.manager = new MyConfigManager(plugin);
@@ -90,7 +91,8 @@ public class MyConfig
         this.reloadConfig();
     }
  
-    public void reloadConfig() {this.config = YamlConfiguration.loadConfiguration(manager.getConfigContent(file));}
+    @SuppressWarnings("deprecation")
+	public void reloadConfig() {this.config = YamlConfiguration.loadConfiguration(manager.getConfigContent(file));}
  
     public void saveConfig() 
     {

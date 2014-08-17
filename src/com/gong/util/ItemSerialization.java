@@ -8,14 +8,14 @@ import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.lang.reflect.Method;
 
-import net.minecraft.server.v1_7_R1.NBTBase;
-import net.minecraft.server.v1_7_R1.NBTCompressedStreamTools;
-import net.minecraft.server.v1_7_R1.NBTTagCompound;
-import net.minecraft.server.v1_7_R1.NBTTagList;
+import net.minecraft.server.v1_7_R3.NBTBase;
+import net.minecraft.server.v1_7_R3.NBTCompressedStreamTools;
+import net.minecraft.server.v1_7_R3.NBTTagCompound;
+import net.minecraft.server.v1_7_R3.NBTTagList;
 
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_7_R1.inventory.CraftInventoryCustom;
-import org.bukkit.craftbukkit.v1_7_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_7_R3.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_7_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
@@ -59,7 +59,26 @@ public class ItemSerialization {
             
             if (!inputObject.isEmpty()) {
                 inventory.setItem(i, CraftItemStack.asCraftMirror(
-                    net.minecraft.server.v1_7_R1.ItemStack.createStack(inputObject)));
+                    net.minecraft.server.v1_7_R3.ItemStack.createStack(inputObject)));
+            }
+        }
+        
+        // Serialize that array
+        return inventory;
+    }
+    
+    public static Inventory fromBase64(String data, String playerName, String b) {
+    	String pre = ChatColor.BLACK+"["+ChatColor.GOLD+playerName+ChatColor.BLACK+"] "+ChatColor.WHITE;
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
+        NBTTagList itemList = (NBTTagList) readNbt(new DataInputStream(inputStream), 0);
+        Inventory inventory = new CraftInventoryCustom(null, itemList.size(), pre);
+ 
+        for (int i = 0; i < itemList.size(); i++) {
+            NBTTagCompound inputObject = (NBTTagCompound) itemList.get(i);
+            
+            if (!inputObject.isEmpty()) {
+                inventory.setItem(i, CraftItemStack.asCraftMirror(
+                    net.minecraft.server.v1_7_R3.ItemStack.createStack(inputObject)));
             }
         }
         

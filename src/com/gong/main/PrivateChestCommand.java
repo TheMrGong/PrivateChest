@@ -37,80 +37,92 @@ public class PrivateChestCommand implements CommandExecutor {
 	};
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
-	{
-		if(args.length == 2)
-		{
-			if(args[0].equalsIgnoreCase("open"))
-			{
-				if(Functions.hasPermission(sender, Functions.getPermissionFromString("privatechest.cmd.*")) || Functions.hasPermission(sender, Functions.getPermissionFromString("privatechest.cmd.open.other")))
-				{
-					if(sender instanceof Player)
-					{
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if(args.length == 2) {
+			if(args[0].equalsIgnoreCase("open")) {
+				if(plugin.getServer().getOnlineMode()==false) {
+					sender.sendMessage(ChatColor.RED+"This command does not work with OnlineMode=false");
+					return true;
+				}
+				if(Functions.hasPermission(sender, Functions.getPermissionFromString("privatechest.cmd.*")) || Functions.hasPermission(sender, Functions.getPermissionFromString("privatechest.cmd.open.other"))) {
+					if(sender instanceof Player) {
 						Player p = (Player) sender;
-						UUIDFetcher fetcher = new UUIDFetcher(Arrays.asList(args[1]));
-						Map<String, UUID> response = null;
-						try {
-							response = fetcher.call();
-						} catch (Exception e) {
-							Bukkit.getLogger().warning("[PrivateChest] Exception while running UUIDFetcher");
-							e.printStackTrace();
-						}
-						UUID id = response.get(args[1]);
-						if(id != null)
-						{
-							if(Functions.hasPrivateChest(id.toString()))
-							{
-								Inventory chest = ItemSerialization.fromBase64(plugin.Config.getString("inv."+id.toString()), args[1]);
-								p.openInventory(chest);
-							} else {
-								p.sendMessage(ChatColor.RED+args[1]+" dosen't have a PrivateChest");
+						if(!Functions.isOnCooldown(p)) {
+							Functions.addToCooldown(p);
+							UUIDFetcher fetcher = new UUIDFetcher(Arrays.asList(args[1]));
+							Map<String, UUID> response = null;
+							try {
+								response = fetcher.call();
+							} catch (Exception e) {
+								Bukkit.getLogger().warning("[PrivateChest] Exception while running UUIDFetcher");
+								e.printStackTrace();
 							}
-						} else p.sendMessage(ChatColor.RED+"Player not found. Name has to be specific and caps sensitive.");
+							UUID id = response.get(args[1]);
+							if(id != null) {
+								if(Functions.hasPrivateChest(id.toString())) {
+									Inventory chest = ItemSerialization.fromBase64(plugin.Config.getString("inv."+id.toString()), args[1], "");
+									p.openInventory(chest);
+								} else {
+									p.sendMessage(ChatColor.RED+args[1]+" dosen't have a PrivateChest");
+								}
+							} else p.sendMessage(ChatColor.RED+"Player not found. Name has to be specific and caps sensitive.");
+						} else p.sendMessage(ChatColor.RED+"You are on cooldown. You may not use /pr commands for "+Functions.getCooldown(p));
 					} else sender.sendMessage(ChatColor.RED+"Consoles can't open inventorys.");
 				} else sender.sendMessage(ChatColor.RED+"You don't have permission: privatechest.cmd.open.other");
 			}
-		} else if(args.length == 1)
-		{
-			if(args[0].equalsIgnoreCase("help"))
-			{
-				if(Functions.hasPermission(sender, Functions.getPermissionFromString("privatechest.cmd.*")) || Functions.hasPermission(sender, Functions.getPermissionFromString("privatechest.cmd.help")))
-				{
-					if(sender instanceof Player)
-					{
-						sender.sendMessage(usage);
+		} else if(args.length == 1) {
+			if(args[0].equalsIgnoreCase("help")) {
+				if(Functions.hasPermission(sender, Functions.getPermissionFromString("privatechest.cmd.*")) || Functions.hasPermission(sender, Functions.getPermissionFromString("privatechest.cmd.help"))) {
+					if(sender instanceof Player) {
+						if(!Functions.isOnCooldown((Player)sender)) {
+							sender.sendMessage(usage);
+						} else sender.sendMessage(ChatColor.RED+"You are on cooldown. You may not use /pr commands for "+Functions.getCooldown((Player)sender));
 					} else {
 						sender.sendMessage(usageCMD);
 					}
 				} else sender.sendMessage(ChatColor.RED+"You don't have permission: privatechest.cmd.help");
-			} else if(args[0].equalsIgnoreCase("open"))
-			{
-				if(Functions.hasPermission(sender, Functions.getPermissionFromString("privatechest.cmd.*")) || Functions.hasPermission(sender, Functions.getPermissionFromString("privatechest.cmd.open")))
-				{
-					if(sender instanceof Player)
-					{
+			} else if(args[0].equalsIgnoreCase("open")) {
+				if(Functions.hasPermission(sender, Functions.getPermissionFromString("privatechest.cmd.*")) || Functions.hasPermission(sender, Functions.getPermissionFromString("privatechest.cmd.open"))) {
+					if(sender instanceof Player) {
 						Player p = (Player) sender;
-						if(Functions.hasPrivateChest(p))
-						{
-							Inventory chest = ItemSerialization.fromBase64(plugin.Config.getString("inv."+p.getUniqueId().toString()), p.getName());
-							p.openInventory(chest);
-						} else {
-							p.sendMessage(ChatColor.GREEN+"PrivateChest not found, generating new one");
-							Inventory defaultPrivateChest = Bukkit.createInventory(null, 27, ChatColor.BLACK+"["+ChatColor.AQUA+"PrivateChest"+ChatColor.BLACK+"] ");
-							plugin.Config.set("inv."+p.getUniqueId().toString(), ItemSerialization.toBase64(defaultPrivateChest));
-							plugin.Config.saveConfig();
-							p.openInventory(defaultPrivateChest);
-						}
+						if(!Functions.isOnCooldown(p)) {
+							if(Functions.hasPrivateChest(p)) {
+								Inventory chest = ItemSerialization.fromBase64(plugin.Config.getString("inv."+p.getUniqueId().toString()), p.getName());
+								p.openInventory(chest);
+							} else {
+								p.sendMessage(ChatColor.GREEN+"PrivateChest not found, generating new one");
+								Inventory defaultPrivateChest = Bukkit.createInventory(null, 27, ChatColor.BLACK+"["+ChatColor.AQUA+"PrivateChest"+ChatColor.BLACK+"] ");
+								plugin.Config.set("inv."+p.getUniqueId().toString(), ItemSerialization.toBase64(defaultPrivateChest));
+								plugin.Config.saveConfig();
+								p.openInventory(defaultPrivateChest);
+							}
+						} else p.sendMessage(ChatColor.RED+"You are on cooldown. You may not use /pr commands for "+Functions.getCooldown(p));
 					} else sender.sendMessage(ChatColor.RED+"Consoles don't have a PrivateChest. ");
 				} else sender.sendMessage(ChatColor.RED+"You don't have permission: privatechest.cmd.open");
+			} else if(args[0].equalsIgnoreCase("reload")) {
+				if(Functions.hasPermission(sender, Functions.getPermissionFromString("privatechest.cmd.*")) || Functions.hasPermission(sender, Functions.getPermissionFromString("privatechest.cmd.reload"))) {
+					if(sender instanceof Player) {
+						Player p = (Player) sender;
+						if(Functions.isOnCooldown(p)) {
+							p.sendMessage(ChatColor.RED+"You are on cooldown. You may not use /pr commands for "+Functions.getCooldown(p));
+							return true;
+						}
+						Functions.addToCooldown(p);
+						plugin.Config.reloadConfig();
+						p.sendMessage(ChatColor.GOLD+"Reloaded config");
+						return true;
+					} else {
+						plugin.Config.reloadConfig();
+						sender.sendMessage("Reloaded config");
+					}
+				}
 			}
-		} else if(args.length == 0)
-		{
-			if(Functions.hasPermission(sender, Functions.getPermissionFromString("privatechest.cmd.*")) || Functions.hasPermission(sender, Functions.getPermissionFromString("privatechest.cmd.help")))
-			{
-				if(sender instanceof Player)
-				{
-					sender.sendMessage(usage);
+		} else if(args.length == 0) {
+			if(Functions.hasPermission(sender, Functions.getPermissionFromString("privatechest.cmd.*")) || Functions.hasPermission(sender, Functions.getPermissionFromString("privatechest.cmd.help"))) {
+				if(sender instanceof Player) {
+					if(!Functions.isOnCooldown((Player)sender)) {
+						sender.sendMessage(usage);
+					} else sender.sendMessage(ChatColor.RED+"You are on cooldown. You may not use /pr commands for "+Functions.getCooldown((Player)sender));
 				} else {
 					sender.sendMessage(usageCMD);
 				}
