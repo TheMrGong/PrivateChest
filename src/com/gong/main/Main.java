@@ -66,11 +66,11 @@ public class Main extends JavaPlugin {
 	@Override
 	public void onEnable()
 	{
+		plugin = this;
 		if(Bukkit.getServer().getOnlineMode() == false) {
 			Bukkit.getLogger().warning("[PrivateChest] Command \"/pr open <Player>\" Will not function with offline-mode");
 		}
 		Functions.startCommandClock();
-		plugin = this;
 		manager = new MyConfigManager(this);
 		Config = manager.getNewConfig("config.yml", new String[]{"Config for", "PrivateChest"});
 		addDefault("opt-out", false, "Set to \"true\" if you dont want metrics on!").addDefault("auto-update", "update", "Set to \"check\" to check for an update and log into console if a update is found. Set to \"update\" to automaticly download an update when it is found. Set to \"none\" to do nothing when an update is found.").addDefault("sign").addDefault("inv");

@@ -2,6 +2,7 @@ package com.gong.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -37,6 +38,27 @@ public class Functions {
 		}
 		return ret;
 	}
+	
+	/**
+	 * Calculates the amount of items
+	 * that would be dropped from a
+	 * certain fortune level.
+	 * @
+	 * {@code public static int getDropCount(int i, Random random)}
+	 * 
+	 * @param i Enchantment level
+	 * @param random A random
+	 * @return Int representing amount of items dropped
+	 */
+	public static int getDropCount(int i, Random random) {
+        int j = random.nextInt(i + 2) - 1;
+ 
+        if (j < 0) {
+            j = 0;
+        }
+ 
+        return (j + 1);
+    }
 
 	public static boolean hasPermission(Player p, String perm)
 	{
